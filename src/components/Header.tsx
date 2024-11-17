@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import "./header.css";
+import Nav from "./Nav";
 
 export default function Header() {
   return (
@@ -11,6 +12,7 @@ export default function Header() {
           {/* <img src="" alt="" /> */}
           <h1>DigitalNews</h1>
         </a>
+        <Nav />
       </div>
     </header>
   );
