@@ -13,6 +13,7 @@ export default function Header() {
           <h1>DigitalNews</h1>
         </a>
         <Nav />
+        <div className="position-relative"></div>
       </div>
     </header>
   );
