@@ -1,17 +1,15 @@
+//import Icons
+import "bootstrap-icons/font/bootstrap-icons.css";
+
+//import bootstrap
+import "bootstrap/dist/css/bootstrap.css";
+
 import type { Metadata } from "next";
-import localFont from "next/font/local";
+import { EB_Garamond } from "next/font/google";
+import "./variables.css";
 import "./globals.css";
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
+const ebGaramond = EB_Garamond({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Digital News App",
@@ -25,9 +23,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        {children}
-      </body>
+      <body className={ebGaramond.className}>{children}</body>
     </html>
   );
 }
