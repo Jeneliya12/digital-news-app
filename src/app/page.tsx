@@ -1,6 +1,11 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+import Hero from "@/sections/Hero";
+import Posts from "@/sections/Posts";
 
 export default function Home() {
-  return <h1>Digital News App</h1>;
+  return (
+    <main id="main">
+      <Hero />
+      <Posts />
+    </main>
+  );
 }
