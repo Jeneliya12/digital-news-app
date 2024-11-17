@@ -8,6 +8,7 @@ import type { Metadata } from "next";
 import { EB_Garamond } from "next/font/google";
 import "./variables.css";
 import "./globals.css";
+import Header from "@/components/Header";
 
 const ebGaramond = EB_Garamond({ subsets: ["latin"] });
 
@@ -23,6 +24,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <Header />
       <body className={ebGaramond.className}>{children}</body>
     </html>
   );
