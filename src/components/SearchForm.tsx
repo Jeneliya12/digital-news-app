@@ -1,5 +1,5 @@
 import React from "react";
-import "./serachForm.css";
+import "./searchForm.css";
 
 export default function SearchForm({
   active,
