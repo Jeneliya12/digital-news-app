@@ -19,12 +19,12 @@ export default function Posts() {
   const getSinglePostData = (id: string) => {
     fetch(`/api/postitems/${id}`)
       .then((res) => {
-        if (res.status == 404) {
+        if (res.status === 404) {
           router.push("/not-found");
         }
         return res.json();
       })
-      .then((data) => setItems(data))
+      .then((data) => setItems([data])) // Add to the array
       .catch((e) => console.log(e.message));
   };
 
@@ -33,32 +33,44 @@ export default function Posts() {
     getSinglePostData("6745207fe8fc187c49745c3c");
   }, []);
 
+  const item = items.length > 0 ? items[0] : null;
+
   return (
     <section id="posts" className="posts">
       <div className="container" data-aos="fade-up">
         <div className="row g-5">
           <div className="col-lg-4">
-            <PostItemOne large={true} item={items} />
+            {item ? (
+              <PostItemOne large={true} item={item} />
+            ) : (
+              <p>Loading...</p>
+            )}
           </div>
           <div className="col-lg-8">
             <div className="row g-5">
               <div className="col-lg-4 border-start custom-border">
                 {items &&
                   items.length > 0 &&
-                  items.map(
-                    (item: {
-                      _id: string;
-                      img: string;
-                      category: string;
-                      date: string;
-                      title: string;
-                      brief: string;
-                      avatar: string;
-                      author: string;
-                    }) => (
-                      <PostItemOne key={item._id} large={false} item={item} />
+                  items
+                    .filter(
+                      (item: { trending: boolean; top: boolean }) =>
+                        !item.trending && !item.top
                     )
-                  )}
+                    .slice(0, 3)
+                    .map(
+                      (item: {
+                        _id: string;
+                        img: string;
+                        category: string;
+                        date: string;
+                        title: string;
+                        brief: string;
+                        avatar: string;
+                        author: string;
+                      }) => (
+                        <PostItemOne key={item._id} large={false} item={item} />
+                      )
+                    )}
               </div>
               <div className="col-lg-4"></div>
               <div className="col-lg-4"></div>
