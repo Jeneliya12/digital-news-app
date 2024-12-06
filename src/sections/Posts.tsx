@@ -11,20 +11,35 @@ export default function Posts() {
 
   const getItemsData = () => {
     fetch(`/api/postitems`)
-      .then((res) => res.json()) // Added .json() to parse the response
+      .then((res) => res.json())
       .then((data) => setItems(data))
       .catch((e) => console.error(e.message));
   };
 
+  const getSinglePostData = (id: string) => {
+    fetch(`/api/postitems/${id}`)
+      .then((res) => {
+        if (res.status == 404) {
+          router.push("/not-found");
+        }
+        return res.json();
+      })
+      .then((data) => setItems(data))
+      .catch((e) => console.log(e.message));
+  };
+
   useEffect(() => {
     getItemsData();
+    getSinglePostData("6745207fe8fc187c49745c3c");
   }, []);
 
   return (
     <section id="posts" className="posts">
       <div className="container" data-aos="fade-up">
         <div className="row g-5">
-          <div className="col-lg-4"></div>
+          <div className="col-lg-4">
+            <PostItemOne large={true} item={items} />
+          </div>
           <div className="col-lg-8">
             <div className="row g-5">
               <div className="col-lg-4 border-start custom-border">
