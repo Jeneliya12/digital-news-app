@@ -14,6 +14,23 @@ export default function PostItem({
   const [id, setId] = useState<string | null>(null);
   const [item, setItem] = useState(initialPost);
 
+  const tabsData = [
+    { id: 1, name: "Popular", active: true },
+    { id: 2, name: "Trennding", active: false },
+  ];
+
+  const [tabs, setTabs] = useState(tabsData);
+
+  const handleTabActive = (id: number): void => {
+    setTabs(
+      tabsData.map((tab) => {
+        tab.active = false;
+        if (tab.id === id) tab.active = true;
+        return tab;
+      })
+    );
+  };
+
   const getSinglePostData = (postId: string) => {
     fetch(`/api/postitems/${postId}`)
       .then((res) => res.json())
@@ -125,6 +142,24 @@ export default function PostItem({
               ) : (
                 <Preloader />
               )}
+            </div>
+            <div className="col-md-3">
+              <div className="aside-block">
+                <ul className="nav nav-pills custom-tab-nav mb-4">
+                  {tabs.map((tab) => (
+                    <li className="nav-item" key={tab.id}>
+                      <button
+                        className={`nav-link ${
+                          tab.active ? "active" : undefined
+                        }`}
+                        onClick={() => handleTabActive(tab.id)}
+                      >
+                        {tab.name}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           </div>
         </div>
