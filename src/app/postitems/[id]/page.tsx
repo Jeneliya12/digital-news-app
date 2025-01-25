@@ -4,6 +4,8 @@ import { initialPost } from "@/sections/Posts";
 import React, { useState, useEffect } from "react";
 import { Preloader } from "@/components/Preloader";
 import Image from "next/image";
+import { PostProps } from "@/sections/Posts";
+import SidePostItem from "@/components/SidePostItem";
 import "./style.css";
 
 export default function PostItem({
@@ -16,18 +18,18 @@ export default function PostItem({
 
   const tabsData = [
     { id: 1, name: "Popular", active: true },
-    { id: 2, name: "Trennding", active: false },
+    { id: 2, name: "Trending", active: false },
   ];
 
   const [tabs, setTabs] = useState(tabsData);
+  const [items, setItems] = useState<PostProps[]>([]);
 
   const handleTabActive = (id: number): void => {
     setTabs(
-      tabsData.map((tab) => {
-        tab.active = false;
-        if (tab.id === id) tab.active = true;
-        return tab;
-      })
+      tabs.map((tab) => ({
+        ...tab,
+        active: tab.id === id,
+      }))
     );
   };
 
@@ -36,6 +38,13 @@ export default function PostItem({
       .then((res) => res.json())
       .then((data) => setItem(data))
       .catch((e) => console.error("Error fetching post data:", e.message));
+  };
+
+  const getItemsData = () => {
+    fetch(`/api/postitems`)
+      .then((res) => res.json())
+      .then((data) => setItems(data))
+      .catch((e) => console.log(e.message));
   };
 
   useEffect(() => {
@@ -50,6 +59,7 @@ export default function PostItem({
   useEffect(() => {
     if (id) {
       getSinglePostData(id);
+      getItemsData();
     }
   }, [id]);
 
@@ -73,21 +83,9 @@ export default function PostItem({
                   <h1 className="mb-5">{item.title}</h1>
                   <p>
                     <span className="firstcharacter">
-                      {item.brief && item.brief.charAt(0)}
+                      {item.brief?.charAt(0)}
                     </span>
-                    {item.brief && item.brief.substring(1)}
-                  </p>
-                  <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    Vivamus lacinia odio vitae vestibulum vestibulum. Cras
-                    venenatis euismod malesuada. Maecenas sit amet purus et arcu
-                    facilisis gravida. Curabitur id libero a nulla posuere
-                    pulvinar vel a lectus. Sed at risus vel tortor eleifend
-                    tincidunt in sed nulla. Nulla facilisi. Integer non dolor
-                    vel odio malesuada fermentum vel id turpis. Fusce quis
-                    ligula in nisl interdum aliquam. Pellentesque habitant morbi
-                    tristique senectus et netus et malesuada fames ac turpis
-                    egestas.
+                    {item.brief?.substring(1)}
                   </p>
                   <figure className="my-4">
                     <Image
@@ -102,42 +100,6 @@ export default function PostItem({
                       Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                     </figcaption>
                   </figure>
-                  <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    Vivamus lacinia odio vitae vestibulum vestibulum. Cras
-                    venenatis euismod malesuada. Maecenas sit amet purus et arcu
-                    facilisis gravida. Curabitur id libero a nulla posuere
-                    pulvinar vel a lectus. Sed at risus vel tortor eleifend
-                    tincidunt in sed nulla. Nulla facilisi. Integer non dolor
-                    vel odio malesuada fermentum vel id turpis. Fusce quis
-                    ligula in nisl interdum aliquam. Pellentesque habitant morbi
-                    tristique senectus et netus et malesuada fames ac turpis
-                    egestas.
-                  </p>
-                  <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    Vivamus lacinia odio vitae vestibulum vestibulum. Cras
-                    venenatis euismod malesuada. Maecenas sit amet purus et arcu
-                    facilisis gravida. Curabitur id libero a nulla posuere
-                    pulvinar vel a lectus. Sed at risus vel tortor eleifend
-                    tincidunt in sed nulla. Nulla facilisi. Integer non dolor
-                    vel odio malesuada fermentum vel id turpis. Fusce quis
-                    ligula in nisl interdum aliquam. Pellentesque habitant morbi
-                    tristique senectus et netus et malesuada fames ac turpis
-                    egestas.
-                  </p>
-                  <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    Vivamus lacinia odio vitae vestibulum vestibulum. Cras
-                    venenatis euismod malesuada. Maecenas sit amet purus et arcu
-                    facilisis gravida. Curabitur id libero a nulla posuere
-                    pulvinar vel a lectus. Sed at risus vel tortor eleifend
-                    tincidunt in sed nulla. Nulla facilisi. Integer non dolor
-                    vel odio malesuada fermentum vel id turpis. Fusce quis
-                    ligula in nisl interdum aliquam. Pellentesque habitant morbi
-                    tristique senectus et netus et malesuada fames ac turpis
-                    egestas.
-                  </p>
                 </div>
               ) : (
                 <Preloader />
@@ -159,6 +121,17 @@ export default function PostItem({
                     </li>
                   ))}
                 </ul>
+                <div className="tab-content">
+                  <div
+                    className={`tab-pane fade ${
+                      tabs[0].active ? "show active" : ""
+                    }`}
+                  >
+                    {items.slice(0, 6).map((sideItem: PostProps) => (
+                      <SidePostItem key={sideItem._id} item={sideItem} />
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
