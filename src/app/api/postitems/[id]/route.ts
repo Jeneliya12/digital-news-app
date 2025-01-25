@@ -3,17 +3,27 @@ import PostItem from "../../../../../models/PostItem";
 
 dbConnect();
 
-export async function GET(
-  _request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request, { params }: { params: { id: string } }) {
   try {
-    const postItem = await PostItem.findById(params.id).select("-_v");
-    return Response.json(postItem);
+    // Await the params object
+    const { id } = await params;
+
+    const postItem = await PostItem.findById(id).select("-__v");
+    if (!postItem) {
+      return new Response(
+        JSON.stringify({ message: "No Item Found for this ID" }),
+        { status: 404 }
+      );
+    }
+
+    return new Response(JSON.stringify(postItem), {
+      headers: { "Content-Type": "application/json" },
+      status: 200,
+    });
   } catch (error) {
-    return new Response(
-      JSON.stringify({ message: "No Item Found for this ID" }),
-      { status: 404 }
-    );
+    console.error("Error fetching post by ID:", error);
+    return new Response(JSON.stringify({ message: "Internal Server Error" }), {
+      status: 500,
+    });
   }
 }

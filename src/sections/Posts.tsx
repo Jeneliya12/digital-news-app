@@ -4,12 +4,35 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import "./posts.css";
 import PostItemOne from "@/components/PostItemOne";
-import TrendingPost from "@/components/TrendingPost"; // Make sure this component is imported
+import TrendingPost from "@/components/TrendingPost";
 import { Preloader } from "@/components/Preloader";
+
+export interface PostProps {
+  _id: string;
+  img: string;
+  category: string;
+  date: string;
+  title: string;
+  brief: string;
+  avatar: string;
+  author: string;
+}
+
+export const initialPost = {
+  _id: "",
+  img: "",
+  category: "",
+  date: "",
+  title: "",
+  brief: "",
+  avatar: "",
+  author: "",
+};
 
 export default function Posts() {
   const router = useRouter();
-  const [items, setItems] = useState<any[]>([]);
+  const [items, setItems] = useState([]);
+  const [item, setItem] = useState(initialPost);
 
   // Fetch all items
   const getItemsData = () => {
@@ -28,15 +51,8 @@ export default function Posts() {
         }
         return res.json();
       })
-      .then((data) => {
-        setItems((prevItems) => {
-          const isAlreadyIncluded = prevItems.some(
-            (item) => item._id === data._id
-          );
-          return isAlreadyIncluded ? prevItems : [data, ...prevItems];
-        });
-      })
-      .catch((e) => console.error("Error fetching single post:", e.message));
+      .then((data) => setItem(data))
+      .catch((e) => console.log(e.message));
   };
 
   useEffect(() => {
@@ -44,28 +60,25 @@ export default function Posts() {
     getSinglePostData("6745207fe8fc187c49745c3c");
   }, []);
 
-  const highlightedItem =
-    items.length > 0 && items.find((item) => item.trending || item.top);
-
   return (
     <section id="posts" className="posts">
       <div className="container" data-aos="fade-up">
         <div className="row g-5">
-          {/* Highlighted Post */}
           <div className="col-lg-4">
-            {highlightedItem && (
-              <PostItemOne large={true} item={highlightedItem} />
-            )}
+            <PostItemOne large={true} item={item} />
           </div>
-          {/* Other Posts */}
+
           <div className="col-lg-8">
             <div className="row g-5">
               <div className="col-lg-4 border-start custom-border">
                 {items && items.length > 0 ? (
                   items
-                    .filter((item) => !item.trending && !item.top)
+                    .filter(
+                      (item: { trending: boolean; top: boolean }) =>
+                        !item.trending && !item.top
+                    )
                     .slice(0, 3)
-                    .map((item) => (
+                    .map((item: PostProps) => (
                       <PostItemOne key={item._id} large={false} item={item} />
                     ))
                 ) : (
@@ -75,23 +88,26 @@ export default function Posts() {
               <div className="col-lg-4 border-start custom-border">
                 {items && items.length > 0 ? (
                   items
-                    .filter((item) => !item.trending && !item.top)
+                    .filter(
+                      (item: { trending: boolean; top: boolean }) =>
+                        !item.trending && !item.top
+                    )
                     .slice(3, 6)
-                    .map((item) => (
+                    .map((item: PostProps, index: number) => (
                       <PostItemOne key={item._id} large={false} item={item} />
                     ))
                 ) : (
                   <Preloader />
                 )}
               </div>
-              <div className="col-lg-4 border-start custom-border">
+              <div className="col-lg-4">
                 <div className="trending">
                   <h3>Trending</h3>
                   <ul className="trending-post">
                     {items && items.length > 0 ? (
                       items
-                        .filter((item) => item.trending)
-                        .map((item, index) => (
+                        .filter((item: { trending: boolean }) => item.trending)
+                        .map((item: PostProps, index: number) => (
                           <TrendingPost
                             key={item._id}
                             index={index}
