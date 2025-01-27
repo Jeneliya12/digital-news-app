@@ -88,14 +88,20 @@ export default function PostItem({
                     {item.brief?.substring(1)}
                   </p>
                   <figure className="my-4">
-                    <Image
+                    {/* <Image
                       src={`/${item.img}`}
                       alt=""
                       className="img-fluid"
                       width={1000}
                       height={600}
                       layout="responsive"
+                    /> */}
+                    <img
+                      src={`/${item.img}`}
+                      alt={item.title || "Image"}
+                      className="img-fluid"
                     />
+
                     <figcaption>
                       Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                     </figcaption>
@@ -128,6 +134,15 @@ export default function PostItem({
                     }`}
                   >
                     {items.slice(0, 6).map((sideItem: PostProps) => (
+                      <SidePostItem key={sideItem._id} item={sideItem} />
+                    ))}
+                  </div>
+                  <div
+                    className={`tab-pane fade ${
+                      tabs[1].active ? "show active" : ""
+                    }`}
+                  >
+                    {items.slice(6, 12).map((sideItem: PostProps) => (
                       <SidePostItem key={sideItem._id} item={sideItem} />
                     ))}
                   </div>
