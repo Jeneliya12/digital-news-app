@@ -148,6 +148,23 @@ export default function PostItem({
                   </div>
                 </div>
               </div>
+              <div className="aside-block">
+                <h3 className="aside-title">Video</h3>
+                <div className="video-post">
+                  <a
+                    target="_blank"
+                    href="https://www.youtube.com/watch?v=Q89Dzox4jAE"
+                    className="link-video"
+                  >
+                    <span className="bi-play-fill"></span>
+                    <img
+                      src="/assets/img/post-landscape-3.jpg"
+                      alt=""
+                      className="img-fluid"
+                    />
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
         </div>
