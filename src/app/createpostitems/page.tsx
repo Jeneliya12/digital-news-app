@@ -2,16 +2,16 @@
 
 import React, { useState, useEffect } from "react";
 
-export default function CreatePostItem() {
-  const initialState = {
-    title: "",
-    img: "",
-    category: "",
-    author: "",
-    brief: "",
-    validate: "",
-  };
+export const initialState = {
+  title: "",
+  img: "",
+  category: "",
+  author: "",
+  brief: "",
+  validate: "",
+};
 
+export default function CreatePostItem() {
   const [text, setText] = useState(initialState);
 
   const handleTextChange = (
@@ -50,7 +50,7 @@ export default function CreatePostItem() {
 
       const result = response.status;
 
-      if (result === 201) {
+      if (result === 200) {
         setText({ ...text, validate: "success" });
         console.log("Success", result);
       }
@@ -81,7 +81,7 @@ export default function CreatePostItem() {
                           type="text"
                           name="title"
                           value={text.title}
-                          onChange={(e) => console.log(e)}
+                          onChange={handleTextChange}
                           className="from-control"
                           placeholder="Enter Title"
                         />
@@ -133,7 +133,7 @@ export default function CreatePostItem() {
                       </div>
                       <div className="mb-3">
                         {text.validate === "loading" && (
-                          <div className="laoding">Sending Post</div>
+                          <div className="laoding">Updating Post</div>
                         )}
                         {text.validate === "incomplete" && (
                           <div className="error-message">
