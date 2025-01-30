@@ -82,3 +82,23 @@ export async function PUT(
     );
   }
 }
+
+export async function DELETE(
+  request: Request,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const postItem = await PostItem.findByIdAndDelete(params.id);
+    return new Response(JSON.stringify(postItem), {
+      headers: {
+        "content-Type": "application/json",
+      },
+      status: 200,
+    });
+  } catch (error) {
+    console.error("Error fetching post by ID:", error);
+    return new Response(JSON.stringify({ message: "Internal Server Error" }), {
+      status: 500,
+    });
+  }
+}

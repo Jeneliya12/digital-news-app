@@ -6,13 +6,13 @@ import { Preloader } from "@/components/Preloader";
 import Image from "next/image";
 import { PostProps } from "@/sections/Posts";
 import SidePostItem from "@/components/SidePostItem";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+
 import "./style.css";
 
-export default function PostItem({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
+export default function PostItem({ params }: { params: { id: string } }) {
+  const router = useRouter();
   const [id, setId] = useState<string | null>(null);
   const [item, setItem] = useState(initialPost);
 
@@ -63,6 +63,31 @@ export default function PostItem({
     }
   }, [id]);
 
+  const handleDeletePost = async (postId: string) => {
+    if (!postId) {
+      console.error("Invalid Post ID");
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/postitems/${postId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status} - ${response.statusText}`);
+      }
+
+      console.log("Success", response.status);
+      router.push(`/postitems`); // Redirect after successful delete
+    } catch (error) {
+      console.error("Error deleting post:", error);
+    }
+  };
+
   return (
     <main id="main">
       <section className="single-post-content">
@@ -88,14 +113,6 @@ export default function PostItem({
                     {item.brief?.substring(1)}
                   </p>
                   <figure className="my-4">
-                    {/* <Image
-                      src={`/${item.img}`}
-                      alt=""
-                      className="img-fluid"
-                      width={1000}
-                      height={600}
-                      layout="responsive"
-                    /> */}
                     <img
                       src={`/${item.img}`}
                       alt={item.title || "Image"}
@@ -106,6 +123,22 @@ export default function PostItem({
                       Lorem ipsum dolor sit amet, consectetur adipiscing elit.
                     </figcaption>
                   </figure>
+                  <p>loreun ipsum</p>
+                  <p>loreun ipsum</p>
+                  <div className="d-flex justify-content-center gap-4">
+                    <button
+                      className="btn btn-primary"
+                      onClick={() => handleDeletePost(id!)}
+                    >
+                      <i className="bi bi-trash"></i>
+                    </button>
+                    <Link
+                      href={`/createpostitems/${id}`}
+                      className="btn btn-primary"
+                    >
+                      <i className="bi bi-pen"></i>
+                    </Link>
+                  </div>
                 </div>
               ) : (
                 <Preloader />
